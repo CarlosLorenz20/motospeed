@@ -1,14 +1,14 @@
-# 🚀 Guía de Despliegue MotoSpeed en Hostinger
+# 🚀 Guía de Despliegue MotoSpeed en Hostinger + Render
 
 ## 📋 Resumen de la Arquitectura
 
 | Componente | Plataforma | URL Final |
 |------------|------------|-----------|
 | Frontend (React) | Hostinger | https://motosspeed.com |
-| Backend (Node.js) | Railway (gratis) | https://motospeed-backend-production.up.railway.app |
-| Base de Datos | Railway PostgreSQL | (interno) |
+| Backend (Node.js) | Render.com (GRATIS) | https://motospeed-api.onrender.com |
+| Base de Datos | Render PostgreSQL (GRATIS) | (interno) |
 
-> **Nota:** Hostinger hosting compartido NO soporta Node.js backend. Usaremos Railway (gratuito) para el backend y Hostinger para el frontend estático.
+> **Nota:** Hostinger Business es hosting compartido (solo PHP). El backend Node.js va en Render.com que es 100% gratis.
 
 ---
 
@@ -20,21 +20,19 @@ Los siguientes archivos ya están listos en tu proyecto:
 
 - ✅ `frontend/.env.production` - Variables de entorno del frontend
 - ✅ `frontend/public/.htaccess` - Configuración Apache para React Router
-- ✅ `backend/railway.toml` - Configuración de Railway
 - ✅ `backend/src/config/db.js` - Soporte para DATABASE_URL
 - ✅ `.gitignore` - Archivos a ignorar en Git
 
-### 1.2 Variables de Entorno para Railway (Backend)
+### 1.2 Variables de Entorno para Render (Backend)
 
-Estas son las variables que configurarás en Railway:
+Estas son las variables que configurarás en Render:
 
 ```env
 PORT=3001
 NODE_ENV=production
 FRONTEND_URL=https://motosspeed.com
 
-# PostgreSQL (Railway auto-configura DATABASE_URL)
-# DATABASE_URL se genera automáticamente al vincular PostgreSQL
+# PostgreSQL - Render genera DATABASE_URL automáticamente
 
 # JWT
 JWT_SECRET=MotoSpeed_Super_Secure_JWT_Key_2026_Production_XyZ123!@#
@@ -43,7 +41,7 @@ JWT_EXPIRES_IN=7d
 # Mercado Pago (credenciales de prueba)
 MP_ACCESS_TOKEN=APP_USR-483439952749370-030714-eff56d65476699bf92f231a358a424d4-3249985880
 MP_PUBLIC_KEY=APP_USR-10b487b2-d552-441b-aade-0d42942d41a0
-MP_WEBHOOK_URL=https://TU-APP.up.railway.app/api/payments/webhook
+MP_WEBHOOK_URL=https://motospeed-api.onrender.com/api/payments/webhook
 MP_SUCCESS_URL=https://motosspeed.com/checkout/success
 MP_FAILURE_URL=https://motosspeed.com/checkout/failure
 MP_PENDING_URL=https://motosspeed.com/checkout/pending
@@ -58,63 +56,56 @@ SMTP_FROM_NAME=MotoSpeed Chile
 
 ---
 
-## 🚂 PARTE 2: Desplegar Backend en Railway (Gratis)
+## 🚂 PARTE 2: Desplegar Backend en Render.com (GRATIS)
 
-### 2.1 Crear Cuenta en Railway
+### 2.1 Crear Cuenta en Render
 
-1. Ve a **https://railway.app**
-2. Clic en **"Login"** → **"Login with GitHub"**
-3. Autoriza Railway
+1. Ve a **https://render.com**
+2. Clic en **"Get Started for Free"**
+3. Selecciona **"GitHub"** para registrarte
+4. Autoriza Render a acceder a tu GitHub
 
-### 2.2 Subir Proyecto a GitHub (si no lo tienes)
+### 2.2 Crear Base de Datos PostgreSQL
 
-Abre PowerShell en la carpeta del proyecto:
+**PRIMERO creamos la base de datos:**
 
-```powershell
-cd "C:\Users\carlo\Desktop\MotoSpeed"
+1. En el Dashboard de Render, clic en **"New +"** → **"PostgreSQL"**
+2. Completa:
+   - **Name:** `motospeed-db`
+   - **Database:** `motospeed`
+   - **User:** dejar por defecto
+   - **Region:** Oregon (US West) - es el más rápido
+   - **Plan:** **Free** ✅
+3. Clic en **"Create Database"**
+4. Espera ~2 minutos a que se cree
+5. **COPIA** el valor de **"Internal Database URL"** (lo necesitarás)
 
-# Inicializar repositorio
-git init
+### 2.3 Crear Web Service (Backend)
 
-# Agregar archivos
-git add .
+1. Clic en **"New +"** → **"Web Service"**
+2. Selecciona **"Build and deploy from a Git repository"** → **Next**
+3. Conecta tu repositorio **CarlosLorenz20/motospeed**
+4. Configura:
+   - **Name:** `motospeed-api`
+   - **Region:** Oregon (US West) - igual que la BD
+   - **Branch:** `main`
+   - **Root Directory:** `backend`  ⚠️ **MUY IMPORTANTE**
+   - **Runtime:** Node
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start`
+   - **Plan:** **Free** ✅
 
-# Primer commit
-git commit -m "MotoSpeed E-commerce inicial"
+5. Clic en **"Advanced"** para agregar variables de entorno
 
-# Crear repositorio en GitHub y conectar
-# Opción 1: Ir a github.com, crear repo "motospeed", luego:
-git remote add origin https://github.com/TU_USUARIO/motospeed.git
-git branch -M main
-git push -u origin main
-```
+### 2.4 Configurar Variables de Entorno
 
-### 2.3 Crear Proyecto en Railway
-
-1. En Railway, clic **"New Project"**
-2. Selecciona **"Deploy from GitHub repo"**
-3. Busca y selecciona tu repositorio **motospeed**
-4. **MUY IMPORTANTE:** Ve a **Settings** del servicio creado
-5. En **"Root Directory"** escribe: `backend`
-6. Clic en **Save** y espera que redeploy
-
-### 2.4 Agregar Base de Datos PostgreSQL
-
-1. En tu proyecto Railway, clic **"+ New"** (botón morado)
-2. Selecciona **"Database"** → **"Add PostgreSQL"**
-3. Espera que se cree (toma ~30 segundos)
-4. Railway vinculará automáticamente la variable `DATABASE_URL`
-
-### 2.5 Configurar Variables de Entorno
-
-1. Clic en tu servicio **backend** (no la BD)
-2. Ve a la pestaña **"Variables"**
-3. Clic **"+ New Variable"** y agrega UNA POR UNA:
+En la sección "Environment Variables", agrega estas (una por una):
 
 ```
 PORT=3001
 NODE_ENV=production
 FRONTEND_URL=https://motosspeed.com
+DATABASE_URL=[PEGAR LA URL DE LA BD QUE COPIASTE]
 JWT_SECRET=MotoSpeed_Super_Secure_JWT_Key_2026_Production_XyZ123!@#
 JWT_EXPIRES_IN=7d
 MP_ACCESS_TOKEN=APP_USR-483439952749370-030714-eff56d65476699bf92f231a358a424d4-3249985880
@@ -126,49 +117,59 @@ SMTP_PASS=dkks delr wmgf oulq
 SMTP_FROM_NAME=MotoSpeed Chile
 ```
 
-4. **IMPORTANTE:** Las URLs de MP las agregarás DESPUÉS de obtener el dominio
+**NOTA:** Las URLs de MP (webhook, success, etc.) las agregarás DESPUÉS de obtener la URL del servicio.
 
-### 2.6 Obtener Dominio del Backend
+6. Clic en **"Create Web Service"**
 
-1. Ve a **Settings** → **Networking** → **Generate Domain**
-2. Railway generará algo como: `motospeed-backend-production.up.railway.app`
-3. **Copia este dominio**
+### 2.5 Esperar el Deploy
+
+- Render tardará ~3-5 minutos en hacer el primer deploy
+- Verás los logs en tiempo real
+- Cuando termine, verás **"Live"** en verde
+
+### 2.6 Obtener URL del Backend
+
+Tu URL será algo como:
+```
+https://motospeed-api.onrender.com
+```
 
 ### 2.7 Completar Variables de Mercado Pago
 
-Vuelve a **Variables** y agrega (reemplaza TU-DOMINIO):
+1. Ve a tu servicio → **"Environment"**
+2. Agrega las variables faltantes:
 
 ```
-MP_WEBHOOK_URL=https://TU-DOMINIO.up.railway.app/api/payments/webhook
+MP_WEBHOOK_URL=https://motospeed-api.onrender.com/api/payments/webhook
 MP_SUCCESS_URL=https://motosspeed.com/checkout/success
 MP_FAILURE_URL=https://motosspeed.com/checkout/failure
 MP_PENDING_URL=https://motosspeed.com/checkout/pending
 ```
 
+3. Render hará redeploy automático
+
 ### 2.8 Verificar que Funciona
 
 Abre en el navegador:
 ```
-https://TU-DOMINIO.up.railway.app/api/products
+https://motospeed-api.onrender.com/api/products
 ```
 
-Deberías ver un JSON con productos (o array vacío si no hay datos).
+Deberías ver `[]` (array vacío) o lista de productos.
 
-### 2.9 Poblar Base de Datos (Opcional)
+### 2.9 Poblar Base de Datos
 
-Para cargar datos de prueba, en Railway:
+Para cargar datos iniciales:
 
-1. Ve a tu servicio backend
-2. Clic en **"Settings"** → **"Deploy"**
-3. En **Start Command** cambia temporalmente a:
-   ```
-   npm run seed && npm start
-   ```
-4. Clic **Save** → Espera deploy
-5. **IMPORTANTE:** Después del primer deploy exitoso, vuelve a cambiar a:
-   ```
-   npm start
-   ```
+1. En Render, ve a tu Web Service
+2. Clic en **"Shell"** (pestaña arriba)
+3. Ejecuta: `npm run seed`
+
+O temporalmente cambia el Start Command a:
+```
+npm run seed && npm start
+```
+Y después de un deploy exitoso, vuelve a `npm start`
 
 ---
 
@@ -179,10 +180,8 @@ Para cargar datos de prueba, en Railway:
 **ANTES de compilar**, edita `frontend/.env.production`:
 
 ```env
-VITE_API_URL=https://TU-DOMINIO-RAILWAY.up.railway.app/api
+VITE_API_URL=https://motospeed-api.onrender.com/api
 ```
-
-Reemplaza `TU-DOMINIO-RAILWAY` con el dominio real de Railway.
 
 ### 3.2 Compilar el Frontend
 
@@ -203,7 +202,7 @@ Esto crea la carpeta `dist/` con los archivos listos para producción.
 ### 3.3 Subir a Hostinger
 
 **Paso 1:** Entra a tu panel de Hostinger
-**Paso 2:** Ve a **Sitios web** → **motosspeed.com** → **Panel**
+**Paso 2:** Ve a **Sitios web** → **motosspeed.cl** → **Panel**
 **Paso 3:** Clic en **"Administrador de archivos"**
 **Paso 4:** Navega a `public_html`
 **Paso 5:** **ELIMINA TODO** el contenido existente (seleccionar todo → eliminar)
@@ -230,7 +229,7 @@ Súbelo directamente a `public_html/` (al mismo nivel que index.html)
 
 ### 3.4 Verificar Frontend
 
-Abre https://motosspeed.com - deberías ver la tienda.
+Abre https://motosspeed.cl - deberías ver la tienda.
 
 Si ves error 404 al navegar, verifica que el `.htaccess` esté subido.
 
@@ -245,7 +244,7 @@ Si ves error 404 al navegar, verifica que el `.htaccess` esté subido.
 3. Ve a **"Webhooks"** o **"Notificaciones IPN"**
 4. En **"URL de producción"** ingresa:
    ```
-   https://TU-DOMINIO-RAILWAY.up.railway.app/api/payments/webhook
+   https://motospeed-api.onrender.com/api/payments/webhook
    ```
 5. Selecciona eventos: **Pagos**
 6. Guarda cambios
@@ -254,7 +253,7 @@ Si ves error 404 al navegar, verifica que el `.htaccess` esté subido.
 
 ```powershell
 # Desde PowerShell, prueba que el webhook responda
-Invoke-RestMethod -Method POST -Uri "https://TU-DOMINIO-RAILWAY.up.railway.app/api/payments/webhook" -ContentType "application/json" -Body '{"type":"test"}'
+Invoke-RestMethod -Method POST -Uri "https://motospeed-api.onrender.com/api/payments/webhook" -ContentType "application/json" -Body '{"type":"test"}'
 ```
 
 Debería responder "OK".
@@ -265,8 +264,8 @@ Debería responder "OK".
 
 ### 5.1 Checklist Rápido
 
-- [ ] **Backend:** https://TU-DOMINIO.up.railway.app/api/products devuelve JSON
-- [ ] **Frontend:** https://motosspeed.com carga la tienda
+- [ ] **Backend:** https://motospeed-api.onrender.com/api/products devuelve JSON
+- [ ] **Frontend:** https://motosspeed.cl carga la tienda
 - [ ] **Registro:** Crear cuenta funciona y envía email de bienvenida
 - [ ] **Login:** Iniciar sesión funciona
 - [ ] **Carrito:** Agregar productos al carrito funciona
@@ -296,7 +295,7 @@ DNI/RUT: 11111111-1
 
 ### Error: CORS (blocked by CORS policy)
 **Causa:** El backend no permite requests del frontend.
-**Solución:** Verifica que `FRONTEND_URL=https://motosspeed.com` esté en Railway.
+**Solución:** Verifica que `FRONTEND_URL=https://motosspeed.cl` esté en Render.
 
 ### Error: Mixed Content
 **Causa:** Frontend HTTPS llama a backend HTTP.
@@ -308,21 +307,26 @@ DNI/RUT: 11111111-1
 
 ### Error: "Cannot connect to database"
 **Causa:** PostgreSQL no está vinculado.
-**Solución:** En Railway, verifica que la BD esté conectada y `DATABASE_URL` exista en variables.
+**Solución:** Verifica que `DATABASE_URL` esté en las variables de Render.
 
 ### Error: Webhook no funciona
-**Causa:** URL incorrecta o servicio caído.
+**Causa:** URL incorrecta o servicio dormido.
 **Solución:** 
 1. Verifica la URL en el panel de MP
-2. Revisa logs en Railway (pestaña "Deployments" → clic en deploy → "View Logs")
+2. Revisa logs en Render (pestaña "Logs")
+3. El servicio gratuito de Render "duerme" después de 15 min de inactividad
+
+### El servicio está dormido (tarda en responder)
+**Causa:** Render Free duerme servicios inactivos.
+**Solución:** La primera request tarda ~30 segundos en "despertar". Es normal en el plan gratuito.
 
 ### El pago se acredita pero no vuelve a la tienda
 **Causa:** Las URLs de retorno están mal configuradas.
-**Solución:** Verifica en Railway:
+**Solución:** Verifica en Render:
 ```
-MP_SUCCESS_URL=https://motosspeed.com/checkout/success
-MP_FAILURE_URL=https://motosspeed.com/checkout/failure
-MP_PENDING_URL=https://motosspeed.com/checkout/pending
+MP_SUCCESS_URL=https://motosspeed.cl/checkout/success
+MP_FAILURE_URL=https://motosspeed.cl/checkout/failure
+MP_PENDING_URL=https://motosspeed.cl/checkout/pending
 ```
 
 ---
@@ -331,11 +335,10 @@ MP_PENDING_URL=https://motosspeed.com/checkout/pending
 
 ```
 MotoSpeed/
-├── backend/                    ← Despliega en Railway
+├── backend/                    ← Despliega en Render.com
 │   ├── src/
 │   ├── uploads/
 │   ├── package.json
-│   ├── railway.toml
 │   └── .env (solo local)
 ├── frontend/                   
 │   ├── src/
@@ -351,23 +354,32 @@ MotoSpeed/
 
 ---
 
-## 🎯 URLs Finales (ejemplo)
+## 🎯 URLs Finales
 
 | Recurso | URL |
 |---------|-----|
-| Frontend | https://motosspeed.com |
-| API Backend | https://motospeed-backend-production.up.railway.app/api |
-| Webhook MP | https://motospeed-backend-production.up.railway.app/api/payments/webhook |
-| Success | https://motosspeed.com/checkout/success |
-| Failure | https://motosspeed.com/checkout/failure |
-| Pending | https://motosspeed.com/checkout/pending |
+| Frontend | https://motosspeed.cl |
+| API Backend | https://motospeed-api.onrender.com/api |
+| Webhook MP | https://motospeed-api.onrender.com/api/payments/webhook |
+| Success | https://motosspeed.cl/checkout/success |
+| Failure | https://motosspeed.cl/checkout/failure |
+| Pending | https://motosspeed.cl/checkout/pending |
+
+---
+
+## ⚠️ Notas sobre Render Free
+
+1. **El servicio duerme** después de 15 minutos de inactividad
+2. **La primera visita** puede tardar 30-60 segundos en "despertar"
+3. **750 horas gratis/mes** - suficiente para un sitio pequeño
+4. Para un sitio de producción real, considera el plan Starter ($7/mes)
 
 ---
 
 ## 🆘 Soporte
 
 Si tienes problemas:
-1. **Backend:** Revisa logs en Railway → Deployments → View Logs
+1. **Backend:** Revisa logs en Render → Tu servicio → Logs
 2. **Frontend:** Abre DevTools (F12) → Console para ver errores
 3. **MP:** Revisa el panel de desarrolladores de Mercado Pago
 
