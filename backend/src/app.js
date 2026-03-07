@@ -18,28 +18,16 @@ const logger = require('./utils/logger');
 // Crear aplicación Express
 const app = express();
 
-// Configurar CORS - permitir múltiples orígenes
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  'http://localhost:5173',
-  'http://localhost:3000'
-].filter(Boolean);
-
+// Configurar CORS - permitir todos los orígenes temporalmente
 app.use(cors({
-  origin: function(origin, callback) {
-    // Permitir requests sin origin (como Postman o curl)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(null, true); // Permitir todos en desarrollo, cambiar a false en producción estricta
-    }
-  },
-  credentials: true,
+  origin: '*',
+  credentials: false,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With']
 }));
+
+// Manejar preflight OPTIONS explícitamente
+app.options('*', cors());
 
 // Parsear JSON
 app.use(express.json());
