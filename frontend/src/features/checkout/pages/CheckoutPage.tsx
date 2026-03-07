@@ -25,7 +25,7 @@ export default function CheckoutPage() {
   const [orderDetails, setOrderDetails] = useState<OrderStatusResponse['orderDetails'] | null>(null);
   const [paymentId, setPaymentId] = useState<string | null>(null);
   
-  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const pollingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const popupRef = useRef<Window | null>(null);
   const orderIdsRef = useRef<string[]>([]);
   

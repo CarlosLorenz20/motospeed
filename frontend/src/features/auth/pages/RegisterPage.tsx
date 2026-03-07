@@ -63,14 +63,14 @@ export default function RegisterPage() {
         delayChildren: 0.2
       }
     }
-  };
+  } as const;
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { 
       opacity: 1, 
       y: 0,
-      transition: { type: 'spring', stiffness: 100 }
+      transition: { type: 'spring' as const, stiffness: 100 }
     }
   };
 
@@ -80,7 +80,7 @@ export default function RegisterPage() {
       scale: 1, 
       opacity: 1,
       transition: { 
-        type: 'spring', 
+        type: 'spring' as const, 
         stiffness: 200,
         damping: 15
       }
