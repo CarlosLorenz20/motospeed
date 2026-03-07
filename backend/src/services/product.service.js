@@ -21,10 +21,10 @@ class ProductService {
 
     if (filters.search) {
       where[Op.or] = [
-        { nombre: { [Op.iLike]: `%${filters.search}%` } },
-        { descripcion: { [Op.iLike]: `%${filters.search}%` } },
-        { marca: { [Op.iLike]: `%${filters.search}%` } },
-        { sku: { [Op.iLike]: `%${filters.search}%` } }
+        { nombre: { [Op.like]: `%${filters.search}%` } },
+        { descripcion: { [Op.like]: `%${filters.search}%` } },
+        { marca: { [Op.like]: `%${filters.search}%` } },
+        { sku: { [Op.like]: `%${filters.search}%` } }
       ];
     }
 
@@ -241,10 +241,10 @@ class ProductService {
       where: {
         activo: true,
         [Op.or]: [
-          { nombre: { [Op.iLike]: `%${query}%` } },
-          { descripcion: { [Op.iLike]: `%${query}%` } },
-          { marca: { [Op.iLike]: `%${query}%` } },
-          { sku: { [Op.iLike]: `%${query}%` } }
+          { nombre: { [Op.like]: `%${query}%` } },
+          { descripcion: { [Op.like]: `%${query}%` } },
+          { marca: { [Op.like]: `%${query}%` } },
+          { sku: { [Op.like]: `%${query}%` } }
         ]
       },
       include: [{

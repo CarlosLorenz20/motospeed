@@ -60,7 +60,7 @@ const Product = sequelize.define('Product', {
     allowNull: true
   },
   imagenes_adicionales: {
-    type: DataTypes.JSONB,
+    type: DataTypes.JSON,
     allowNull: true
   },
   marca: {

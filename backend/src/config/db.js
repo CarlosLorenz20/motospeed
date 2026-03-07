@@ -1,20 +1,23 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-// Soporte para DATABASE_URL (Railway, Heroku, etc.) o variables individuales
+// Detectar el tipo de base de datos (mysql o postgres)
+const dialect = process.env.DB_DIALECT || 'mysql';
+const defaultPort = dialect === 'mysql' ? 3306 : 5432;
+
 let sequelize;
 
 if (process.env.DATABASE_URL) {
-  // Usar DATABASE_URL si está disponible (producción en Railway)
+  // Usar DATABASE_URL si está disponible (Railway, Render, etc.)
   sequelize = new Sequelize(process.env.DATABASE_URL, {
-    dialect: 'postgres',
+    dialect: dialect,
     logging: process.env.NODE_ENV === 'development' ? console.log : false,
-    dialectOptions: {
-      ssl: process.env.NODE_ENV === 'production' ? {
+    dialectOptions: dialect === 'postgres' && process.env.NODE_ENV === 'production' ? {
+      ssl: {
         require: true,
         rejectUnauthorized: false
-      } : false
-    },
+      }
+    } : {},
     pool: {
       max: 5,
       min: 0,
@@ -29,15 +32,15 @@ if (process.env.DATABASE_URL) {
     }
   });
 } else {
-  // Usar variables individuales (desarrollo local)
+  // Usar variables individuales (desarrollo local o Hostinger)
   sequelize = new Sequelize(
     process.env.DB_NAME,
     process.env.DB_USER,
     process.env.DB_PASSWORD,
     {
-      host: process.env.DB_HOST,
-      port: process.env.DB_PORT || 5432,
-      dialect: 'postgres',
+      host: process.env.DB_HOST || 'localhost',
+      port: process.env.DB_PORT || defaultPort,
+      dialect: dialect,
       logging: process.env.NODE_ENV === 'development' ? console.log : false,
       pool: {
         max: 5,

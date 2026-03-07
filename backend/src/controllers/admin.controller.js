@@ -80,9 +80,9 @@ const getAllProducts = async (req, res) => {
 
     if (search) {
       where[Op.or] = [
-        { nombre: { [Op.iLike]: `%${search}%` } },
-        { sku: { [Op.iLike]: `%${search}%` } },
-        { marca: { [Op.iLike]: `%${search}%` } }
+        { nombre: { [Op.like]: `%${search}%` } },
+        { sku: { [Op.like]: `%${search}%` } },
+        { marca: { [Op.like]: `%${search}%` } }
       ];
     }
 
@@ -339,8 +339,8 @@ const getAllOrders = async (req, res) => {
         attributes: ['id', 'name', 'email', 'telefono'],
         where: search ? {
           [Op.or]: [
-            { name: { [Op.iLike]: `%${search}%` } },
-            { email: { [Op.iLike]: `%${search}%` } }
+            { name: { [Op.like]: `%${search}%` } },
+            { email: { [Op.like]: `%${search}%` } }
           ]
         } : undefined,
         required: !!search

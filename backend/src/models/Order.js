@@ -80,7 +80,7 @@ const Order = sequelize.define('Order', {
     allowNull: true
   },
   metadata: {
-    type: DataTypes.JSONB,
+    type: DataTypes.JSON,
     allowNull: true
   },
   email_sent: {
