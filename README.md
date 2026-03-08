@@ -2,34 +2,27 @@
 
 Tienda online para venta de motos y repuestos en Chile.
 
-## Stack Tecnológico
+## Estructura del Repositorio
 
-- **Backend**: Laravel 11 (PHP 8.2+)
-- **Frontend**: Blade + Tailwind CSS + Alpine.js
-- **Base de datos**: PostgreSQL (Supabase)
-- **Pagos**: Mercado Pago Chile
+Este repositorio contiene **dos versiones** del proyecto:
 
-## Instalación Local
+### 1. Laravel (carpeta raíz)
+- **Stack**: Laravel 12 + Blade + Tailwind CSS
+- **Requisitos**: PHP 8.4+, PostgreSQL
+- **Ideal para**: Shared hosting con PHP moderno
 
-```bash
-composer install
-cp .env.example .env
-php artisan key:generate
-# Configurar .env
-php artisan serve
-```
+### 2. Node.js + React (carpetas backend/ y frontend/)
+- **Stack**: Express.js + React + TypeScript
+- **Requisitos**: Node.js 20+, PostgreSQL
+- **Ideal para**: VPS, Railway, Render, etc.
 
-## Deploy en Hostinger
+## Deploy Rápido
 
-1. Subir archivos a `public_html/`
-2. Crear `.env` con credenciales de producción
-3. Ejecutar via SSH:
-```bash
-composer install --no-dev --optimize-autoloader
-php artisan config:cache
-php artisan route:cache
-chmod -R 775 storage bootstrap/cache
-```
+### Laravel (Hostinger Shared)
+Requiere PHP 8.4+ en el hosting.
+
+### Node.js (VPS/Railway)
+Ver `DEPLOY_HOSTINGER.md` para instrucciones detalladas.
 
 ## Credenciales de Prueba
 
