@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { getImageUrl } from '../../../lib/imageUtils';
 import type { Product } from '../../../types';
 import { formatPrice, getFinalPrice, hasDiscount, getDiscountPercent } from '../services/productsApi';
 import { useCart } from '../../cart/context/CartContext';
@@ -28,7 +29,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       <div className="relative aspect-square overflow-hidden bg-gray-100">
         {product.imagen ? (
           <img
-            src={product.imagen.startsWith('http') ? product.imagen : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${product.imagen}`}
+            src={getImageUrl(product.imagen) ?? ''}
             alt={product.nombre}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />

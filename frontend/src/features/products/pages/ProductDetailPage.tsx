@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { getImageUrl } from '../../../lib/imageUtils';
 import { FiCheck, FiX } from 'react-icons/fi';
 import { getProduct, formatPrice, getFinalPrice, hasDiscount, getDiscountPercent } from '../services/productsApi';
 import { useCart } from '../../cart/context/CartContext';
@@ -26,10 +27,7 @@ export default function ProductDetailPage() {
       try {
         const data = await getProduct(slug);
         setProduct(data);
-        // Construir URL correcta para la imagen
-        const imageUrl = data.imagen 
-          ? (data.imagen.startsWith('http') ? data.imagen : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${data.imagen}`)
-          : null;
+        const imageUrl = getImageUrl(data.imagen);
         setSelectedImage(imageUrl);
       } catch (err) {
         setError('Producto no encontrado');
@@ -85,11 +83,7 @@ export default function ProductDetailPage() {
   const hasOffer = hasDiscount(product);
   const discountPercent = getDiscountPercent(product);
   
-  // Helper para construir URL de imagen
-  const getImageUrl = (img: string) => {
-    if (!img) return '';
-    return img.startsWith('http') ? img : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${img}`;
-  };
+
   
   const allImages = [product.imagen, ...(product.imagenes_adicionales || [])]
     .filter(Boolean)

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
+import { getImageUrl } from '../../../lib/imageUtils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiSearch, FiFilter, FiX, FiStar, FiChevronDown, 
@@ -556,7 +557,7 @@ export default function ProductListPage() {
 
                           {product.imagen ? (
                             <img 
-                              src={product.imagen.startsWith('http') ? product.imagen : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${product.imagen}`} 
+                              src={getImageUrl(product.imagen) ?? ''} 
                               alt={product.nombre}
                               className="w-full h-full object-contain p-4 transform group-hover:scale-105 transition-transform duration-300"
                             />

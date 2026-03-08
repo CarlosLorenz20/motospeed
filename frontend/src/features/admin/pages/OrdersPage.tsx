@@ -3,6 +3,7 @@ import {
   FiSearch, FiEye, FiChevronLeft, FiChevronRight, FiX,
   FiPackage, FiUser, FiDollarSign, FiTruck
 } from 'react-icons/fi';
+import { getImageUrl } from '../../../lib/imageUtils';
 import { getAdminOrders, getOrderDetail, updateOrderStatus } from '../services/adminApi';
 
 interface OrderItem {
@@ -451,7 +452,7 @@ export default function OrdersPage() {
                             <div className="w-16 h-16 bg-white rounded-lg overflow-hidden flex-shrink-0">
                               {item.product?.imagen ? (
                                 <img
-                                  src={item.product.imagen.startsWith('http') ? item.product.imagen : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${item.product.imagen}`}
+                                  src={getImageUrl(item.product.imagen) ?? ''}
                                   alt={item.product.nombre}
                                   className="w-full h-full object-cover"
                                 />

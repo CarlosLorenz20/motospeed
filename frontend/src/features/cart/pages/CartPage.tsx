@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { FiShoppingCart, FiArrowLeft, FiTrash2, FiCreditCard } from 'react-icons/fi';
 import CartItemComponent from '../components/CartItem';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../../products/services/productsApi';
@@ -10,7 +11,9 @@ export default function CartPage() {
     return (
       <div className="container mx-auto px-4 py-16">
         <div className="text-center">
-          <div className="text-6xl mb-4">🛒</div>
+          <div className="flex justify-center mb-4">
+            <FiShoppingCart className="w-20 h-20 text-gray-300" />
+          </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Tu carrito está vacío</h1>
           <p className="text-gray-600 mb-6">
             ¡Agrega productos para comenzar tu compra!
@@ -32,8 +35,9 @@ export default function CartPage() {
         <h1 className="text-3xl font-bold text-gray-900">Carrito de Compras</h1>
         <button
           onClick={clearCart}
-          className="text-red-600 hover:text-red-700 text-sm font-medium"
+          className="flex items-center gap-2 text-red-600 hover:text-red-700 text-sm font-medium"
         >
+          <FiTrash2 className="w-4 h-4" />
           Vaciar carrito
         </button>
       </div>
@@ -63,9 +67,7 @@ export default function CartPage() {
             to="/productos"
             className="inline-flex items-center text-blue-600 hover:text-blue-700 mt-4"
           >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
+            <FiArrowLeft className="w-5 h-5 mr-2" />
             Seguir comprando
           </Link>
         </div>
@@ -104,11 +106,11 @@ export default function CartPage() {
             <div className="mt-6">
               <p className="text-xs text-gray-500 text-center mb-2">Métodos de pago aceptados</p>
               <div className="flex justify-center gap-2">
-                <div className="w-10 h-6 bg-gray-100 rounded flex items-center justify-center text-xs">
+                <div className="w-10 h-6 bg-gray-100 rounded flex items-center justify-center text-xs font-bold text-blue-600">
                   MP
                 </div>
-                <div className="w-10 h-6 bg-gray-100 rounded flex items-center justify-center text-xs">
-                  💳
+                <div className="w-10 h-6 bg-gray-100 rounded flex items-center justify-center">
+                  <FiCreditCard className="w-4 h-4 text-gray-500" />
                 </div>
               </div>
             </div>
@@ -118,3 +120,4 @@ export default function CartPage() {
     </div>
   );
 }
+

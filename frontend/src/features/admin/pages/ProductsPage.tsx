@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { getImageUrl } from '../../../lib/imageUtils';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast, { Toaster } from 'react-hot-toast';
 import { 
@@ -141,7 +142,7 @@ export default function ProductsPage() {
         activo: product.activo
       });
       if (product.imagen) {
-        setImagePreview(product.imagen.startsWith('http') ? product.imagen : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${product.imagen}`);
+        setImagePreview(getImageUrl(product.imagen) ?? '');
       }
     } else {
       setEditingProduct(null);
@@ -378,7 +379,7 @@ export default function ProductsPage() {
                         <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                           {product.imagen ? (
                             <img
-                              src={product.imagen.startsWith('http') ? product.imagen : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${product.imagen}`}
+                              src={getImageUrl(product.imagen) ?? ''}
                               alt={product.nombre}
                               className="w-full h-full object-cover"
                             />

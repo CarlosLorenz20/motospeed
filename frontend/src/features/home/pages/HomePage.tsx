@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { getImageUrl } from '../../../lib/imageUtils';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
 import { 
@@ -404,7 +405,7 @@ export default function HomePage() {
                             {product.imagen ? (
                               <div className="w-full h-40 overflow-hidden">
                                 <img 
-                                  src={product.imagen.startsWith('http') ? product.imagen : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${product.imagen}`}
+                                  src={getImageUrl(product.imagen) ?? ''}
                                   alt={product.nombre}
                                   className="w-full h-full object-cover"
                                 />

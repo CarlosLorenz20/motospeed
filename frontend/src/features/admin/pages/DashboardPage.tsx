@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { getImageUrl } from '../../../lib/imageUtils';
 import { motion } from 'framer-motion';
 import { 
   FiPackage, FiShoppingCart, FiUsers, FiTag, 
@@ -452,7 +453,7 @@ export default function DashboardPage() {
                       <div className="w-10 h-10 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                         {product.imagen ? (
                           <img 
-                            src={product.imagen.startsWith('http') ? product.imagen : `${import.meta.env.VITE_API_URL?.replace('/api', '')}${product.imagen}`} 
+                            src={getImageUrl(product.imagen) ?? ''} 
                             alt={product.nombre}
                             className="w-full h-full object-cover"
                           />

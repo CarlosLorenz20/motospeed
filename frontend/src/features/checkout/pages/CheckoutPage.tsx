@@ -10,9 +10,9 @@ import {
   checkOrderStatus,
   type OrderStatusResponse
 } from '../services/checkoutApi';
+import { getImageUrl } from '../../../lib/imageUtils';
 import type { PayerInfo } from '../../../types';
 
-const API_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:3001';
 
 export default function CheckoutPage() {
   const { items, getTotal, getTotalItems, clearCart } = useCart();
@@ -406,11 +406,7 @@ export default function CheckoutPage() {
             <div className="space-y-4 max-h-64 overflow-y-auto">
               {items.map((item) => {
                 const price = item.product.precio_oferta || item.product.precio;
-                const imageUrl = item.product.imagen 
-                  ? (item.product.imagen.startsWith('http') 
-                      ? item.product.imagen 
-                      : `${API_URL}${item.product.imagen.startsWith('/') ? '' : '/'}${item.product.imagen}`)
-                  : null;
+                const imageUrl = getImageUrl(item.product.imagen);
                 return (
                   <div key={item.product.id} className="flex gap-3">
                     <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">

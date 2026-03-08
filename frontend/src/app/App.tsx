@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '../features/auth/context/AuthContext';
 import { CartProvider } from '../features/cart/context/CartContext';
+import { useAuth } from '../features/auth/context/AuthContext';
 import Header from '../features/shared/components/Header';
 import Footer from '../features/shared/components/Footer';
 
@@ -28,10 +29,11 @@ import ProductsAdminPage from '../features/admin/pages/ProductsPage';
 import OrdersAdminPage from '../features/admin/pages/OrdersPage';
 import CategoriesPage from '../features/admin/pages/CategoriesPage';
 
-// Layout para páginas públicas
+// Layout para páginas públicas - usa el userId del contexto de auth
 function PublicLayout({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
   return (
-    <CartProvider>
+    <CartProvider userId={user?.id}>
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-grow">

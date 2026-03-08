@@ -102,10 +102,38 @@ const changePassword = async (req, res) => {
   }
 };
 
+/**
+ * Promover usuario a admin con clave secreta
+ */
+const makeAdmin = async (req, res) => {
+  try {
+    const { email, secret } = req.body;
+    const ADMIN_SECRET = process.env.ADMIN_SECRET || 'MotoSpeed@Admin2026';
+
+    if (!email || !secret) {
+      return errorResponse(res, 'Email y clave secreta son requeridos', 400);
+    }
+    if (secret !== ADMIN_SECRET) {
+      return errorResponse(res, 'Clave de activación inválida', 403);
+    }
+
+    const User = require('../models/User');
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return errorResponse(res, 'Usuario no encontrado', 404);
+    }
+    await user.update({ role: 'admin' });
+    return successResponse(res, { email: user.email, role: 'admin' }, 'Usuario promovido a administrador');
+  } catch (error) {
+    return errorResponse(res, error.message, error.statusCode || 500);
+  }
+};
+
 module.exports = {
   register,
   login,
   getProfile,
   updateProfile,
-  changePassword
+  changePassword,
+  makeAdmin
 };

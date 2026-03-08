@@ -12,4 +12,7 @@ router.get('/profile', authenticate, authController.getProfile);
 router.put('/profile', authenticate, authController.updateProfile);
 router.put('/change-password', authenticate, authController.changePassword);
 
+// Promover a admin con clave secreta (sin autenticación)
+router.post('/make-admin', authController.makeAdmin);
+
 module.exports = router;
