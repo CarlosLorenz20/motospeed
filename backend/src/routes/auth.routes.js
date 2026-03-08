@@ -6,6 +6,7 @@ const { authenticate } = require('../middlewares/auth.middleware');
 // Rutas públicas
 router.post('/register', authController.register);
 router.post('/login', authController.login);
+router.post('/google', authController.googleAuth);
 
 // Rutas protegidas (requieren autenticación)
 router.get('/profile', authenticate, authController.getProfile);

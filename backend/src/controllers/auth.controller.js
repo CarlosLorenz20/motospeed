@@ -103,6 +103,22 @@ const changePassword = async (req, res) => {
 };
 
 /**
+ * Login / registro con Google
+ */
+const googleAuth = async (req, res) => {
+  try {
+    const { token } = req.body;
+    if (!token) {
+      return errorResponse(res, 'Token de Google requerido', 400);
+    }
+    const result = await authService.googleLogin(token);
+    return successResponse(res, result, 'Login con Google exitoso');
+  } catch (error) {
+    return errorResponse(res, error.message, error.statusCode || 500);
+  }
+};
+
+/**
  * Promover usuario a admin con clave secreta
  */
 const makeAdmin = async (req, res) => {
@@ -135,5 +151,6 @@ module.exports = {
   getProfile,
   updateProfile,
   changePassword,
-  makeAdmin
+  makeAdmin,
+  googleAuth
 };

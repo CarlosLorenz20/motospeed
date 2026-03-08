@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { User } = require('../models');
 
 class AuthService {
@@ -132,6 +133,49 @@ class AuthService {
     await user.save();
 
     return true;
+  }
+
+  /**
+   * Login / registro con Google
+   */
+  async googleLogin(accessToken) {
+    // Verificar el access_token llamando al endpoint userinfo de Google
+    const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: `Bearer ${accessToken}` }
+    });
+
+    if (!response.ok) {
+      const error = new Error('Token de Google inválido o expirado');
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const { email, name, picture } = await response.json();
+
+    if (!email) {
+      const error = new Error('No se pudo obtener el email de Google');
+      error.statusCode = 400;
+      throw error;
+    }
+
+    // Buscar o crear usuario
+    let user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      const randomPassword = crypto.randomBytes(32).toString('hex');
+      user = await User.create({
+        name: name || email.split('@')[0],
+        email,
+        password: randomPassword,
+        avatar: picture || null,
+        role: 'cliente'
+      });
+    } else if (picture && !user.avatar) {
+      await user.update({ avatar: picture });
+    }
+
+    const token = this.generateToken(user);
+    return { user: user.toPublicJSON(), token };
   }
 
   /**

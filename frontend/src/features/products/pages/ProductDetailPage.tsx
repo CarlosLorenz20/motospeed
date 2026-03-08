@@ -122,7 +122,7 @@ export default function ProductDetailPage() {
                     selectedImage === img ? 'border-blue-600' : 'border-transparent'
                   }`}
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <img src={img ?? undefined} alt="" className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>

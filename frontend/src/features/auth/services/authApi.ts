@@ -46,6 +46,12 @@ export const changePassword = async (
   await api.put('/auth/change-password', { currentPassword, newPassword });
 };
 
+// Login con Google (envia el access_token al backend)
+export const loginWithGoogle = async (token: string): Promise<AuthResponse> => {
+  const response = await api.post<ApiResponse<AuthResponse>>('/auth/google', { token });
+  return response.data.data;
+};
+
 // Guardar auth en localStorage
 export const saveAuth = (user: User, token: string): void => {
   localStorage.setItem('user', JSON.stringify(user));

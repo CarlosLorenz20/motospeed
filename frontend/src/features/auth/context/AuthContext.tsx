@@ -9,6 +9,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  loginWithGoogle: (credential: string) => Promise<void>;
   register: (name: string, email: string, password: string, telefono?: string) => Promise<void>;
   logout: () => void;
   updateUser: (data: Partial<User>) => Promise<void>;
@@ -72,6 +73,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(response.user);
   };
 
+  const loginWithGoogle = async (credential: string) => {
+    const response = await authApi.loginWithGoogle(credential);
+    authApi.saveAuth(response.user, response.token);
+    setUser(response.user);
+  };
+
   const register = async (name: string, email: string, password: string, telefono?: string) => {
     const response = await authApi.register(name, email, password, telefono);
     authApi.saveAuth(response.user, response.token);
@@ -100,6 +107,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: !!user,
         isLoading,
         login,
+        loginWithGoogle,
         register,
         logout,
         updateUser
