@@ -77,16 +77,7 @@ export const checkOrderStatus = async (orderIds: string[]): Promise<OrderStatusR
   return response.data.data;
 };
 
-// Abrir Mercado Pago en ventana emergente
-export const openMercadoPagoPopup = (url: string): Window | null => {
-  const width = 500;
-  const height = 700;
-  const left = window.screenX + (window.outerWidth - width) / 2;
-  const top = window.screenY + (window.outerHeight - height) / 2;
-  
-  return window.open(
-    url,
-    'MercadoPago',
-    `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`
-  );
+// Abrir Mercado Pago en nueva pestaña
+export const openMercadoPagoTab = (url: string): void => {
+  window.open(url, '_blank', 'noopener,noreferrer');
 };

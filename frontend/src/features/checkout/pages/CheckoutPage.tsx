@@ -6,7 +6,7 @@ import { formatPrice } from '../../products/services/productsApi';
 import { 
   createPaymentPreference, 
   getMercadoPagoUrl, 
-  openMercadoPagoPopup,
+  openMercadoPagoTab,
   checkOrderStatus,
   type OrderStatusResponse
 } from '../services/checkoutApi';
@@ -26,7 +26,6 @@ export default function CheckoutPage() {
   const [paymentId, setPaymentId] = useState<string | null>(null);
   
   const pollingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const popupRef = useRef<Window | null>(null);
   const orderIdsRef = useRef<string[]>([]);
   
   const [payerInfo, setPayerInfo] = useState<PayerInfo>({
@@ -75,10 +74,7 @@ export default function CheckoutPage() {
           pollingIntervalRef.current = null;
         }
         
-        // Cerrar popup si está abierto
-        if (popupRef.current && !popupRef.current.closed) {
-          popupRef.current.close();
-        }
+
       } else if (result.status === 'rejected') {
         // Pago rechazado
         setPaymentStatus('failed');
@@ -95,20 +91,7 @@ export default function CheckoutPage() {
     }
   }, [clearCart]);
 
-  // Verificar si el popup se cerró
-  useEffect(() => {
-    if (paymentStatus === 'processing' && popupRef.current) {
-      const checkPopupClosed = setInterval(() => {
-        if (popupRef.current?.closed) {
-          clearInterval(checkPopupClosed);
-          // Hacer una última verificación
-          checkPayment();
-        }
-      }, 500);
-      
-      return () => clearInterval(checkPopupClosed);
-    }
-  }, [paymentStatus, checkPayment]);
+
 
   // Redirigir si el carrito está vacío (solo si no estamos procesando)
   if (items.length === 0 && paymentStatus === 'idle') {
@@ -147,14 +130,8 @@ export default function CheckoutPage() {
       // Obtener URL de MP
       const mpUrl = getMercadoPagoUrl(preference);
       
-      // Abrir en ventana emergente
-      popupRef.current = openMercadoPagoPopup(mpUrl);
-      
-      if (!popupRef.current) {
-        // Si el popup fue bloqueado, redirigir normalmente
-        window.location.href = mpUrl;
-        return;
-      }
+      // Abrir en nueva pestaña
+      openMercadoPagoTab(mpUrl);
 
       // Cambiar estado a procesando
       setPaymentStatus('processing');
@@ -262,41 +239,30 @@ export default function CheckoutPage() {
           </div>
 
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Procesando tu pago...
+            Esperando confirmación de pago
           </h2>
-          
+
           <p className="text-gray-600 mb-6">
-            Completa el pago en la ventana de Mercado Pago.<br/>
-            Esta página se actualizará automáticamente.
+            Se ha abierto Mercado Pago en una nueva pestaña.<br/>
+            Completa el pago allí y esta página se actualizará automáticamente.
           </p>
 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
             <p className="text-sm text-blue-700">
-              <strong>Tip:</strong> Si no ves la ventana de pago, revisa si tu navegador 
-              bloqueó la ventana emergente.
+              <strong>¿No se abrió la pestaña?</strong> Pulsa el botón de abajo para intentarlo de nuevo.
             </p>
           </div>
 
-          {/* Botón para abrir de nuevo */}
-          <button
-            onClick={() => {
-              if (popupRef.current && !popupRef.current.closed) {
-                popupRef.current.focus();
-              }
-            }}
-            className="text-blue-600 hover:text-blue-800 font-medium"
-          >
-            Abrir ventana de pago
-          </button>
+          {/* No cerrar esta página */}
+          <p className="text-xs text-gray-400 mb-6">
+            No cierres ni recargues esta página mientras completas el pago.
+          </p>
 
-          <div className="mt-8 pt-6 border-t border-gray-200">
+          <div className="mt-4 pt-6 border-t border-gray-200">
             <button
               onClick={() => {
                 if (pollingIntervalRef.current) {
                   clearInterval(pollingIntervalRef.current);
-                }
-                if (popupRef.current && !popupRef.current.closed) {
-                  popupRef.current.close();
                 }
                 setPaymentStatus('idle');
               }}
