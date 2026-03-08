@@ -18,16 +18,13 @@ const logger = require('./utils/logger');
 // Crear aplicación Express
 const app = express();
 
-// Configurar CORS - permitir todos los orígenes temporalmente
+// Configurar CORS - permitir todos los orígenes
 app.use(cors({
   origin: '*',
   credentials: false,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With']
 }));
-
-// Manejar preflight OPTIONS explícitamente
-app.options('(.*)', cors());
 
 // Parsear JSON
 app.use(express.json());
