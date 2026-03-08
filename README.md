@@ -2,27 +2,38 @@
 
 Tienda online para venta de motos y repuestos en Chile.
 
-## Estructura del Repositorio
+## Stack Tecnológico
 
-Este repositorio contiene **dos versiones** del proyecto:
+- **Backend**: Node.js + Express.js + PostgreSQL (Supabase)
+- **Frontend**: React + TypeScript + Tailwind CSS
+- **Pagos**: Mercado Pago
+- **Requisitos**: Node.js 20+
 
-### 1. Laravel (carpeta raíz)
-- **Stack**: Laravel 12 + Blade + Tailwind CSS
-- **Requisitos**: PHP 8.4+, PostgreSQL
-- **Ideal para**: Shared hosting con PHP moderno
+## Estructura del Proyecto
 
-### 2. Node.js + React (carpetas backend/ y frontend/)
-- **Stack**: Express.js + React + TypeScript
-- **Requisitos**: Node.js 20+, PostgreSQL
-- **Ideal para**: VPS, Railway, Render, etc.
+```
+backend/          # API Node.js/Express
+frontend/         # App React/TypeScript
+```
 
-## Deploy Rápido
+## Instalación
 
-### Laravel (Hostinger Shared)
-Requiere PHP 8.4+ en el hosting.
+```bash
+# Backend
+cd backend
+npm install
+cp .env.example .env  # Configurar variables
+npm run dev
 
-### Node.js (VPS/Railway)
-Ver `DEPLOY_HOSTINGER.md` para instrucciones detalladas.
+# Frontend  
+cd frontend
+npm install
+npm run dev
+```
+
+## Deploy
+
+Ver `DEPLOY_HOSTINGER.md` para instrucciones de despliegue en VPS, Railway, Render, etc.
 
 ## Credenciales de Prueba
 
