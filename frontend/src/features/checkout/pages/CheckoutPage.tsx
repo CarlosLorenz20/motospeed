@@ -67,23 +67,16 @@ export default function CheckoutPage() {
         setOrderDetails(result.orderDetails);
         setPaymentId(result.paymentId);
         clearCart();
-        
         // Detener polling
         if (pollingIntervalRef.current) {
           clearInterval(pollingIntervalRef.current);
           pollingIntervalRef.current = null;
         }
-        
-
       } else if (result.status === 'rejected') {
-        // Pago rechazado
+        // Pago rechazado, pero seguir haciendo polling
         setPaymentStatus('failed');
         setError('El pago fue rechazado. Por favor, intenta con otro medio de pago.');
-        
-        if (pollingIntervalRef.current) {
-          clearInterval(pollingIntervalRef.current);
-          pollingIntervalRef.current = null;
-        }
+        // NO detener el polling, para detectar si el usuario paga con otra tarjeta
       }
       // Si está pending, seguir haciendo polling
     } catch (err) {
